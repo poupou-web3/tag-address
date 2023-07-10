@@ -68,10 +68,13 @@ import pandas as pd
 
 array_list = ["0xb9726225b711f5ffe1eb3e117e9caaa0f78dcd37", "0x80c67432656d59144ceff962e8faf8926599bcf8"]
 
-url = "http://127.0.0.1:8000/query_data"
+url = "http://127.0.0.1:8000/query"
 response = requests.post(url, json={"data": array_list})
 df_prediction = pd.read_json(response.json()['result'], orient='split')
+print(df_prediction)
 ```
+
+response = requests.post("http://127.0.0.1:8000/query", json={"data": array_list})
 
 **This is a lot more efficient to pass many addresses**
 
@@ -93,4 +96,4 @@ docker run -e "FLIPSIDE_API_KEY=replace_with_api_key" -p 8000:80 tag_address_api
 
 ### 4. Test the api in your browser
 
-http://localhost:8100/docs#/default/query_data_query_post
+http://localhost:8000/docs#/default/query_data_query_post

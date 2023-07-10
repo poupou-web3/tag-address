@@ -1,13 +1,17 @@
 import unittest
 import os
 from pathlib import Path
+import sys
 
 import pandas as pd
 import numpy as np
 
 from fastapi.testclient import TestClient
-from src.main import app, ArrayInput
-from src.main import run_model
+from main import app
+from main import run_model
+
+app_path = os.path.join(Path.cwd().parent)
+sys.path.append(app_path)
 
 RESOURCE_FOLDER = "resources"
 
@@ -18,6 +22,8 @@ class TestMainApp(unittest.TestCase):
     path_to_test_data = os.path.join(Path.cwd(), RESOURCE_FOLDER, "features1.csv")
     df_features = pd.read_csv(path_to_test_data)
     df_features.set_index('eoa', inplace=True)
+
+    os.chdir(app_path)
 
     def setUp(self):
         self.client = TestClient(app)

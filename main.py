@@ -1,6 +1,4 @@
-import json
 import os
-from pathlib import Path
 from typing import List
 
 import joblib
@@ -12,8 +10,6 @@ from sbdata.FlipsideApi import FlipsideApi
 from src.sql.template import sql_template
 
 app = FastAPI()
-
-root_path = Path.cwd().parent
 
 
 class ArrayInput(BaseModel):
@@ -53,7 +49,7 @@ def run_script(input_array):
 
 def run_model(df_features):
     # Use our model to predict the label
-    model = joblib.load(os.path.join(root_path, 'model', 'optimism_cex_dex_logistic_best.joblib'))
+    model = joblib.load(os.path.join('model', 'optimism_cex_dex_logistic_best.joblib'))
     prediction = model.predict(df_features)
 
     return prediction

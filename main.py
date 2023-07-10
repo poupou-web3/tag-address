@@ -34,7 +34,7 @@ def format_prediction(input_array, prediction):
 
 def run_script(input_array):
     # Use Flipside to extract features from transactions
-    flipside_api = FlipsideApi(os.environ.get("FLIPSIDE_API_KEY2"), timeout_minutes=10, max_address=1000)
+    flipside_api = FlipsideApi(os.environ.get("FLIPSIDE_API_KEY"), timeout_minutes=10, max_address=1000)
     df_features = flipside_api.extract_data_flipside(input_array, sql_template)
     df_features.drop('__row_index', axis=1, inplace=True)
     df_features.set_index('eoa', inplace=True)

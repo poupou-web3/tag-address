@@ -100,15 +100,15 @@ def get_table_name(network):
     return table_name
 
 
-def run_script(input_array, network='ethereum', sql=False, intermediate_table=None):
+def run_script(input_array, network='ethereum', sql=False, intermediate_tables=None):
     # Use Flipside to extract features from transactions
     table_name = get_table_name(network)
 
     flipside_api = FlipsideApi(os.environ.get("FLIPSIDE_API_KEY"), timeout_minutes=10, max_address=1000)
 
     if sql:
-        if intermediate_table is not None:
-            sql_template = get_sql_template_with_intermediate_tables(table_name, intermediate_table, input_array)
+        if intermediate_tables is not None:
+            sql_template = get_sql_template_with_intermediate_tables(table_name, intermediate_tables, input_array)
         else:
             sql_template = get_sql_template(table_name, input_array)
         df_features = flipside_api.execute_query(sql_template)
@@ -118,7 +118,7 @@ def run_script(input_array, network='ethereum', sql=False, intermediate_table=No
 
     df_features = preprocessing(df_features)
     prediction = run_model(df_features, network)
-    prediction_json = format_prediction(input_array, prediction)
+    prediction_json = format_prediction(df_features.index.values, prediction)
 
     return prediction_json
 

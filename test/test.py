@@ -36,7 +36,7 @@ class TestMainApp(unittest.TestCase):
         input_data = self.df_features.index.tolist()
         response = self.client.post(
             "/infer/optimism",
-            json={"data": input_data}  # replace this with your test data
+            json={"address_list": input_data}  # replace this with your test data
         )
         self.assertEqual(response.status_code, 200)
         self.assertIn("result", response.json())

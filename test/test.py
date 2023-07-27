@@ -29,13 +29,13 @@ class TestMainApp(unittest.TestCase):
         self.client = TestClient(app)
 
     def test_model(self):
-        prediction = run_model(self.df_features)
+        prediction = run_model(self.df_features, 'optimism')
         np.testing.assert_array_equal(prediction, EXPECTED_RESULT_FEATURE1)
 
     def test_query_data(self):
         input_data = self.df_features.index.tolist()
         response = self.client.post(
-            "/query",
+            "/infer/optimism",
             json={"data": input_data}  # replace this with your test data
         )
         self.assertEqual(response.status_code, 200)

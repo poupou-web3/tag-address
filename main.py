@@ -21,6 +21,9 @@ class DataFrame(BaseModel):
     index: List[int]
     data: List[List[Any]]
 
+class SqlInput(BaseModel):
+    network: str = Field(..., title="Network", description="Network to query")
+    sql: str = Field(..., title="SQL", description="SQL query to run")
 
 class JsonInputSql(BaseModel):
     sql_address_list: str = Field(..., title="Address list", description="List of addresses to infer as a sql query")
@@ -79,6 +82,18 @@ async def query_data(input: JsonInputSql):
     return {"result": result}
 
 
+@app.post("/infer/sql",
+          summary="Inference endpoint, all parameters in the query",
+          description="it can be any of the following: ethereum, optimism, arbitrum, polygon, bsc, gnosis, fantom, "
+                      "avalanche. This is the most efficient way to query a large number of addresses"
+                      "intermediate table is the table that contains the addresses to query"
+                      "address_list can use tables defined in the intermediate table or a list of addresses",
+          response_description="Inference result")
+async def query_data(input: SqlInput):
+    result = run_script(None, input.network, sql=True, full_sql=input.sql)
+    return {"result": result}
+
+
 def preprocessing(df_features):
     df_features.drop('__row_index', axis=1, inplace=True)
     df_features.set_index('eoa', inplace=True)
@@ -100,17 +115,20 @@ def get_table_name(network):
     return table_name
 
 
-def run_script(input_array, network='ethereum', sql=False, intermediate_tables=None):
+def run_script(input_array, network='ethereum', sql=False, intermediate_tables=None, full_sql=None):
     # Use Flipside to extract features from transactions
     table_name = get_table_name(network)
 
     flipside_api = FlipsideApi(os.environ.get("FLIPSIDE_API_KEY"), timeout_minutes=10, max_address=1000)
 
     if sql:
-        if intermediate_tables is not None:
-            sql_template = get_sql_template_with_intermediate_tables(table_name, intermediate_tables, input_array)
+        if full_sql is not None:
+            sql_template = full_sql
         else:
-            sql_template = get_sql_template(table_name, input_array)
+            if intermediate_tables is not None:
+                sql_template = get_sql_template_with_intermediate_tables(table_name, intermediate_tables, input_array)
+            else:
+                sql_template = get_sql_template(table_name, input_array)
         df_features = flipside_api.execute_query(sql_template)
     else:
         sql_template = get_sql_template(table_name, '%s')

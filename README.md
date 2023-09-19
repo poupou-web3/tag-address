@@ -97,3 +97,5 @@ docker run -e "FLIPSIDE_API_KEY=replace_with_api_key" -p 8000:80 tag_address_api
 ### 4. Test the api in your browser
 
 http://localhost:8000/docs#/default/query_data_query_post
+
+docker run -e "FLIPSIDE_API_KEY=c1180eca-2d3b-451e-adb7-c93e842c4017" -p 8000:80 tag_address_api

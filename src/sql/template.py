@@ -115,11 +115,12 @@ def get_sql_template_with_intermediate_tables(table_name, sql_tables, eoa_list):
     if sql_tables != '' and sql_tables[-1] != ',':
         sql_tables = sql_tables + ','
     sql = f"""
-    WITH
-        {sql_tables}
-      transactions AS (
-        {get_sql_tx(table_name, eoa_list)}
-      )
+    
+    # WITH
+    #     {sql_tables}
+    #   transactions AS (
+    #     {get_sql_tx(table_name, eoa_list)}
+    #   )
     {get_sql_features_from('transactions')}
     ;
     """

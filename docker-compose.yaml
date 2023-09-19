@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  tag_address_api:
+    image: tag_address_api
+    environment:
+      FLIPSIDE_API_KEY: ${FLIPSIDE_API_KEY}
+    ports:
+      - "8000:80"

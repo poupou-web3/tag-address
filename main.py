@@ -21,9 +21,11 @@ class DataFrame(BaseModel):
     index: List[int]
     data: List[List[Any]]
 
+
 class SqlInput(BaseModel):
     network: str = Field(..., title="Network", description="Network to query")
     sql: str = Field(..., title="SQL", description="SQL query to run")
+
 
 class JsonInputSql(BaseModel):
     sql_address_list: str = Field(..., title="Address list", description="List of addresses to infer as a sql query")
@@ -82,7 +84,7 @@ async def query_data(input: JsonInputSql):
     return {"result": result}
 
 
-@app.post("/infer/sql",
+@app.post("/inferFullSql",
           summary="Inference endpoint, all parameters in the query",
           description="it can be any of the following: ethereum, optimism, arbitrum, polygon, bsc, gnosis, fantom, "
                       "avalanche. This is the most efficient way to query a large number of addresses"
@@ -90,6 +92,8 @@ async def query_data(input: JsonInputSql):
                       "address_list can use tables defined in the intermediate table or a list of addresses",
           response_description="Inference result")
 async def query_data(input: SqlInput):
+    print(input.sql)
+    print(input.network)
     result = run_script(None, input.network, sql=True, full_sql=input.sql)
     return {"result": result}
 
